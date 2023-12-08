@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-    import streamlit as st
+import streamlit as st
 from datetime import datetime
 
 def get_greeting_style(greeting_style):
