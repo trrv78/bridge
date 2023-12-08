@@ -13,50 +13,42 @@
 # limitations under the License.
 
 import streamlit as st
-from datetime import datetime
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-def get_greeting_style(greeting_style):
-    if greeting_style == "Friendly":
-        return "Hello"
-    elif greeting_style == "Formal":
-        return "Greetings"
-    else:
-        return "Hey"
+# Load the Iris dataset
+iris_df = sns.load_dataset('iris')
 
 # Streamlit app title
-st.title("Advanced Greeting App")
+st.title("Iris Data Exploration App")
 
 # Sidebar with user inputs
-st.sidebar.header("User Inputs")
-user_name = st.sidebar.text_input("Enter your name:")
-birth_date = st.sidebar.date_input("Your birthdate:")
-age = st.sidebar.slider("Your age:", min_value=0, max_value=100, value=25)
-greeting_style = st.sidebar.radio("Greeting Style:", ["Friendly", "Formal", "Casual"])
+st.sidebar.header("Select Species")
+selected_species = st.sidebar.selectbox("Choose a species:", iris_df['species'].unique())
 
-# Calculate age
-if birth_date:
-    today = datetime.now().date()
-    age = (today - birth_date).days // 365
+# Filter the data based on the selected species
+selected_data = iris_df[iris_df['species'] == selected_species]
 
-# Button to trigger the greeting
-if st.sidebar.button("Generate Greeting"):
-    # Get the selected greeting style
-    style = get_greeting_style(greeting_style)
+# Display descriptive statistics
+st.write(f"### Descriptive Statistics for {selected_species} Species:")
+st.write(selected_data.describe())
 
-    # Display a personalized greeting message
-    st.write(f"{style}, {user_name}! 🎉")
-    st.write(f"I see you're {age} years old.")
+# Display a pair plot of features
+st.write(f"### Pair Plot for {selected_species} Species:")
+sns.pairplot(selected_data, hue='species')
+st.pyplot()
 
-    # Additional content based on age
-    if age < 18:
-        st.write("You're still young! 🌟")
-    elif age > 60:
-        st.write("Enjoy your golden years! 🌅")
-    else:
-        st.write("Hope you're having a great day!")
+# Display a correlation heatmap
+st.write("### Correlation Heatmap:")
+correlation_matrix = selected_data.corr()
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+st.pyplot()
 
 # Additional content (optional)
 st.markdown("---")
-st.write("This is an advanced Streamlit application with more features.")
+st.write("Explore the Iris dataset by selecting different species.")
 
-
+# Show the app
+if __name__ == "__main__":
+    st.sidebar.markdown("[![View on GitHub](https://img.shields.io/badge/View%20on%20GitHub--blue?logo=github)](https://github.com/yourusername/your-repo)")
