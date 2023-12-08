@@ -14,40 +14,52 @@
 
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+import numpy as np
 
-# Load the Iris dataset
-iris_df = sns.load_dataset('iris')
+# Set a random seed for reproducibility
+np.random.seed(42)
+
+# Generate sample data for an e-commerce product catalog
+num_products = 50
+
+categories = ["Electronics", "Clothing", "Books", "Home & Kitchen", "Toys"]
+products = [
+    f"Product-{i}" for i in range(1, num_products + 1)
+]
+prices = np.random.uniform(10, 200, num_products).round(2)
+stock_quantities = np.random.randint(5, 100, num_products)
+
+# Create a DataFrame
+ecommerce_df = pd.DataFrame({
+    'Product': products,
+    'Category': np.random.choice(categories, num_products),
+    'Price': prices,
+    'Stock Quantity': stock_quantities
+})
 
 # Streamlit app title
-st.title("Iris Data Exploration App")
+st.title("E-commerce Product Explorer")
 
 # Sidebar with user inputs
-st.sidebar.header("Select Species")
-selected_species = st.sidebar.selectbox("Choose a species:", iris_df['species'].unique())
+st.sidebar.header("Filter Products")
+selected_category = st.sidebar.selectbox("Select a category:", ["All"] + categories)
 
-# Filter the data based on the selected species
-selected_data = iris_df[iris_df['species'] == selected_species]
+# Filter the data based on the selected category
+filtered_data = ecommerce_df if selected_category == "All" else ecommerce_df[ecommerce_df['Category'] == selected_category]
 
-# Display descriptive statistics
-st.write(f"### Descriptive Statistics for {selected_species} Species:")
-st.write(selected_data.describe())
+# Display filtered products
+st.write(f"### {selected_category} Products:")
+st.write(filtered_data)
 
-# Display a pair plot of features
-st.write(f"### Pair Plot for {selected_species} Species:")
-sns.pairplot(selected_data, hue='species')
-st.pyplot()
-
-# Display a correlation heatmap
-st.write("### Correlation Heatmap:")
-correlation_matrix = selected_data.corr()
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
-st.pyplot()
+# Display summary statistics
+st.write("### Summary Statistics:")
+st.write(f"Total Products: {len(filtered_data)}")
+st.write(f"Average Price: ${filtered_data['Price'].mean():.2f}")
+st.write(f"Total Stock Quantity: {filtered_data['Stock Quantity'].sum()}")
 
 # Additional content (optional)
 st.markdown("---")
-st.write("Explore the Iris dataset by selecting different species.")
+st.write("Explore and filter e-commerce products based on categories.")
 
 # Show the app
 if __name__ == "__main__":
