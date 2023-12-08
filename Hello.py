@@ -60,6 +60,3 @@ st.markdown("---")
 st.write("This is an advanced Streamlit application with more features.")
 
 
-
-if __name__ == "__main__":
-    run()
